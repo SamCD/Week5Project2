@@ -1,0 +1,35 @@
+# a. What is the preferred dish in Scotland?
+# b. What is the preferred dish for people over 25?
+# c. How many people were polled?
+
+E1624 <- c(80100, 35900)
+E25up <- c(143000, 214800)
+G1624 <- c(99400, 43000)
+G25up <- c(150400, 207000)
+results <- data.frame(E1624, E25up, G1624, G25up)
+
+library("dplyr")
+library("tidyr")
+
+results1 <- results %>%
+  gather(demo, count, E1624:G25up) %>%
+  separate(demo, c("County", "Demo"), 1) %>%
+  mutate("vote" = rep(c("y","n"),4))
+
+#Answers question a
+results2 <- results1 %>%
+  summarise("Yea" = sum(count[vote == "y"]), "Nay" = sum(count [vote== "n"]))
+
+#Answer question b
+results3 <- results1 %>%
+  filter(Demo == "25up") %>%
+  summarise("Yea" = sum(count[vote == "y"]), "Nay" = sum(count [vote== "n"]))
+
+#Answers question c
+results4 <- results1 %>%
+  arrange(vote) %>%
+  summarise(turnout = sum(count))
+
+# Having gained some experience using tidyr and dplyr, I would probably
+# keep the data.frame as is however I would ask more varied questions,
+# as I ended up using similar funcions for some of my questions.
